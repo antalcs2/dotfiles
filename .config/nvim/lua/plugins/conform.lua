@@ -1,5 +1,5 @@
 -- https://github.com/stevearc/conform.nvim
--- Autoformat
+-- [[ Autoformat ]]
 return {
 	"stevearc/conform.nvim",
 	lazy = false,
@@ -30,12 +30,6 @@ return {
 			cmake = { "cmakelang" },
 			c = { "clang-format" },
 			cpp = { "clang-format" },
-			-- Conform can also run multiple formatters sequentially
-			-- python = { "isort", "black" },
-			--
-			-- You can use a sub-list to tell conform to run *until* a formatter
-			-- is found.
-			-- javascript = { { "prettierd", "prettier" } },
 		},
 	},
 }

@@ -1,12 +1,12 @@
 -- https://github.com/echasnovski/mini.nvim
--- Collection of various small independent plugins/modules
+-- [[ Collection of various small independent plugins/modules ]]
 return {
 	"echasnovski/mini.nvim",
 	config = function()
 		-- Better Around/Inside textobjects
 		--
 		-- Examples:
-		--  - va)  - [V]isually select [A]round [)]paren
+		--  - va)  - [V]isually select [A]round [)]parentesys
 		--  - yinq - [Y]ank [I]nside [N]ext [']quote
 		--  - ci'  - [C]hange [I]nside [']quote
 		require("mini.ai").setup({ n_lines = 500 })
@@ -25,7 +25,7 @@ return {
 		vim.keymap.set("n", "-", function()
 			local bufname = vim.api.nvim_buf_get_name(0)
 			local _ = MiniFiles.close() or MiniFiles.open(bufname, false)
-		end, { desc = "Toggle [M]ini [F]iles" })
+		end, { desc = "Toggle Mini Files" })
 
 		-- Simple and easy statusline.
 		--  You could remove this setup call if you don't like it,

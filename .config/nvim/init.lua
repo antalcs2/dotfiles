@@ -22,7 +22,30 @@
 
 --]]
 
-require("config.options")
-require("config.keymaps")
+-- Set <space> as the leader key
+-- See `:help mapleader`
+vim.g.mapleader = " "
+vim.g.maplocalleader = " "
 
-require("plugins.lazy")
+--    See `:help lazy.nvim.txt` or https://github.com/folke/lazy.nvim for more info
+local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+if not (vim.uv or vim.loop).fs_stat(lazypath) then
+	vim.fn.system({
+		"git",
+		"clone",
+		"--filter=blob:none",
+		"https://github.com/folke/lazy.nvim.git",
+		"--branch=stable",
+		lazypath,
+	})
+end
+
+-- Add lazy to the `runtimepath`, this allows us to `require` it.
+---@diagnostic disable-next-line: undefined-field
+vim.opt.rtp:prepend(lazypath)
+
+-- Set up Lazy and load `lua/plugins` folder
+require("lazy").setup({ import = "plugins" })
+
+-- The line beneath this is called `modeline`. See `:help modeline`
+-- vim: ts=2 sts=2 sw=2 et
