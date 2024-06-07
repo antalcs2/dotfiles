@@ -22,12 +22,10 @@
 
 --]]
 
--- Set <space> as the leader key
--- See `:help mapleader`
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
---    See `:help lazy.nvim.txt` or https://github.com/folke/lazy.nvim for more info
+-- https://github.com/folke/lazy.nvim
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not (vim.uv or vim.loop).fs_stat(lazypath) then
 	vim.fn.system({
@@ -40,12 +38,14 @@ if not (vim.uv or vim.loop).fs_stat(lazypath) then
 	})
 end
 
--- Add lazy to the `runtimepath`, this allows us to `require` it.
+-- Add lazy to the `runtimepath`, this allows to `require` it.
 ---@diagnostic disable-next-line: undefined-field
 vim.opt.rtp:prepend(lazypath)
 
 -- Set up Lazy and load `lua/plugins` folder
 require("lazy").setup({ import = "plugins" })
+
+-- The `plugin` folder is implicitly loaded
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et

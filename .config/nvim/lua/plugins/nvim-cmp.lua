@@ -1,9 +1,11 @@
+-- https://github.com/hrsh7th/nvim-cmp
 -- Autocompletion
 return {
 	"hrsh7th/nvim-cmp",
 	lazy = false,
 	priority = 100,
 	dependencies = {
+		-- https://github.com/L3MON4D3/LuaSnip
 		{ "L3MON4D3/LuaSnip", build = "make install_jsregexp" },
 		"saadparwaiz1/cmp_luasnip",
 
@@ -18,8 +20,12 @@ return {
 		vim.opt.shortmess:append("c")
 
 		local cmp = require("cmp")
+
 		local luasnip = require("luasnip")
 		luasnip.config.setup({})
+
+		local lspkind = require("lspkind")
+		lspkind.init({})
 
 		cmp.setup({
 			sources = {
@@ -51,12 +57,7 @@ return {
 						luasnip.jump(-1)
 					end
 				end, { "i", "s" }),
-
-				--    https://github.com/L3MON4D3/LuaSnip?tab=readme-ov-file#keymaps
 			}),
 		})
-
-		local lspkind = require("lspkind")
-		lspkind.init({})
 	end,
 }

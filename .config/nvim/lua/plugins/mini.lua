@@ -1,5 +1,4 @@
 -- https://github.com/echasnovski/mini.nvim
--- [[ Collection of various small independent plugins/modules ]]
 return {
 	"echasnovski/mini.nvim",
 	config = function()
@@ -41,5 +40,6 @@ return {
 		statusline.section_location = function()
 			return "%2l:%-2v"
 		end
+		-- TODO: statusline
 	end,
 }

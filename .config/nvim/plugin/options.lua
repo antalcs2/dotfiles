@@ -66,7 +66,9 @@ vim.opt.scrolloff = 10
 vim.opt.hlsearch = true
 
 -- Don't have 'o' add comment
-vim.opt.formatoptions:remove("o")
+-- vim.opt.formatoptions:remove("o")
+-- vim.cmd([[set formatoptions-=o]])
+-- TODO: autocommandot kell letrehozni maskepp nem megy
 
 vim.opt.tabstop = 4
 vim.opt.shiftwidth = 4

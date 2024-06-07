@@ -1,18 +1,13 @@
+-- https://github.com/nvim-telescope/telescope.nvim
 -- Fuzzy Finder (files, lsp, etc)
 return {
 	"nvim-telescope/telescope.nvim",
-	event = "VimEnter",
 	branch = "0.1.x",
 	dependencies = {
 		"nvim-lua/plenary.nvim",
 
-		{ -- If encountering errors, see telescope-fzf-native README for installation instructions
-			"nvim-telescope/telescope-fzf-native.nvim",
-			build = "make",
-			cond = function()
-				return vim.fn.executable("make") == 1
-			end,
-		},
+		-- https://github.com/nvim-telescope/telescope-fzf-native.nvim
+		{ "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
 
 		{ "nvim-telescope/telescope-ui-select.nvim" },
 
@@ -20,19 +15,13 @@ return {
 		{ "nvim-tree/nvim-web-devicons", enabled = vim.g.have_nerd_font },
 	},
 	config = function()
-		-- [[ Configure Telescope ]]
-		-- See `:help telescope` and `:help telescope.setup()`
 		require("telescope").setup({
-			-- You can put your default mappings / updates / etc. in here
-			--  All the info you're looking for is in `:help telescope.setup()`
-			--
-			-- defaults = {
-			--   mappings = {
-			--     i = { ['<c-enter>'] = 'to_fuzzy_refine' },
-			--   },
-			-- },
-			-- pickers = {}
+			defaults = {
+				selection_caret = "󰼛 ",
+			},
+
 			extensions = {
+				fzf = {},
 				["ui-select"] = {
 					require("telescope.themes").get_dropdown(),
 				},
@@ -43,7 +32,6 @@ return {
 		pcall(require("telescope").load_extension, "fzf")
 		pcall(require("telescope").load_extension, "ui-select")
 
-		-- See `:help telescope.builtin`
 		local builtin = require("telescope.builtin")
 		vim.keymap.set("n", "<leader>sh", builtin.help_tags, { desc = "[S]earch [H]elp" })
 		vim.keymap.set("n", "<leader>sk", builtin.keymaps, { desc = "[S]earch [K]eymaps" })

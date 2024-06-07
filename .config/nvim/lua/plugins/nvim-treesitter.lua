@@ -2,6 +2,7 @@
 return {
 	"nvim-treesitter/nvim-treesitter",
 	build = ":TSUpdate",
+	lazy = false,
 	opts = {
 		ensure_installed = { "bash", "c", "cpp", "cmake", "lua", "luadoc", "markdown", "query", "vim", "vimdoc" },
 		auto_install = true,
