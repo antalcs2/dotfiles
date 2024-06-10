@@ -2,15 +2,9 @@
 -- Set to true if you have a Nerd Font installed and selected in the terminal
 vim.g.have_nerd_font = true
 
--- [[ Setting options ]]
--- See `:help vim.opt`
--- NOTE: You can change these options as you wish!
---  For more options, you can see `:help option-list`
-
 -- Make line numbers default
 vim.opt.number = true
--- You can also add relative line numbers, to help with jumping.
---  Experiment for yourself to see if you like it!
+-- Make line numbers relative
 -- vim.opt.relativenumber = true
 
 -- Enable mouse mode, can be useful for resizing splits for example!
@@ -20,7 +14,7 @@ vim.opt.mouse = "a"
 vim.opt.showmode = false
 
 -- Sync clipboard between OS and Neovim.
---  See `:help 'clipboard'`
+-- NOTE: If built from source, needs `xclip` or `xsel` installed
 vim.opt.clipboard = "unnamedplus"
 
 -- Enable break indent
@@ -65,10 +59,24 @@ vim.opt.scrolloff = 10
 -- Set highligth on search
 vim.opt.hlsearch = true
 
--- Don't have 'o' add comment
--- vim.opt.formatoptions:remove("o")
--- vim.cmd([[set formatoptions-=o]])
--- TODO: autocommandot kell letrehozni maskepp nem megy
-
 vim.opt.tabstop = 4
 vim.opt.shiftwidth = 4
+
+-- [[ Basic Autocommands ]]
+
+-- Don't have 'o' add comment
+vim.api.nvim_create_autocmd("BufEnter", {
+	callback = function()
+		vim.cmd([[set formatoptions-=cro]])
+		vim.cmd([[setlocal formatoptions-=cro]])
+	end,
+})
+
+-- Highlight when yanking (copying) text
+vim.api.nvim_create_autocmd("TextYankPost", {
+	desc = "Highlight when yanking (copying) text",
+	group = vim.api.nvim_create_augroup("kickstart-highlight-yank", { clear = true }),
+	callback = function()
+		vim.highlight.on_yank()
+	end,
+})

@@ -1,8 +1,9 @@
 -- https://github.com/echasnovski/mini.nvim
+-- Various utility plugins
 return {
 	"echasnovski/mini.nvim",
 	config = function()
-		-- Better Around/Inside textobjects
+		-- Around/Inside textobjects
 		--
 		-- Examples:
 		--  - va)  - [V]isually select [A]round [)]parentesys
@@ -18,28 +19,38 @@ return {
 		require("mini.surround").setup()
 
 		require("mini.comment").setup()
-		require("mini.pairs").setup()
 
+		-- Adds automatically closing pair to brackets and quotes
+		local bracket_neigh = ".[%s%)%]%}]"
+		local quote_neigh = "[^%a\\][%s%)%]%}]"
+		require("mini.pairs").setup({
+			mappings = {
+				["("] = { action = "open", pair = "()", neigh_pattern = bracket_neigh, register = { cr = false } },
+				["["] = { action = "open", pair = "[]", neigh_pattern = bracket_neigh, register = { cr = false } },
+				["{"] = { action = "open", pair = "{}", neigh_pattern = bracket_neigh, register = { cr = false } },
+
+				['"'] = { action = "open", pair = '""', neigh_pattern = quote_neigh, register = { cr = false } },
+				["'"] = { action = "open", pair = "''", neigh_pattern = quote_neigh, register = { cr = false } },
+				["`"] = { action = "open", pair = "``", neigh_pattern = quote_neigh, register = { cr = false } },
+			},
+		})
+
+		-- File explorer (toggle with '-')
+		-- Allows file editing (press '=' to save changes)
 		require("mini.files").setup()
 		vim.keymap.set("n", "-", function()
 			local bufname = vim.api.nvim_buf_get_name(0)
 			local _ = MiniFiles.close() or MiniFiles.open(bufname, false)
 		end, { desc = "Toggle Mini Files" })
 
-		-- Simple and easy statusline.
-		--  You could remove this setup call if you don't like it,
-		--  and try some other statusline plugin
+		-- Statusline.
 		local statusline = require("mini.statusline")
-		-- set use_icons to true if you have a Nerd Font
 		statusline.setup({ use_icons = vim.g.have_nerd_font })
 
-		-- You can configure sections in the statusline by overriding their
-		-- default behavior. For example, here we set the section for
-		-- cursor location to LINE:COLUMN
+		-- Setting the section for cursor location to LINE:COLUMN
 		---@diagnostic disable-next-line: duplicate-set-field
 		statusline.section_location = function()
 			return "%2l:%-2v"
 		end
-		-- TODO: statusline
 	end,
 }

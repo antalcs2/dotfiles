@@ -1,5 +1,5 @@
 -- https://github.com/stevearc/conform.nvim
--- [[ Autoformat ]]
+-- Autoformat
 return {
 	"stevearc/conform.nvim",
 	lazy = false,

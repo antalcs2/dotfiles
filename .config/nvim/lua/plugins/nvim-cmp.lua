@@ -42,11 +42,14 @@ return {
 			},
 
 			mapping = cmp.mapping.preset.insert({
+				-- Select previous/next item in menu
 				["<C-n>"] = cmp.mapping.select_next_item(),
 				["<C-p>"] = cmp.mapping.select_prev_item(),
 
+				-- Insert selected item
 				["<Tab>"] = cmp.mapping.confirm({ select = true }),
 
+				-- Jump back/forward to snippet
 				["<C-l>"] = cmp.mapping(function()
 					if luasnip.expand_or_locally_jumpable() then
 						luasnip.expand_or_jump()

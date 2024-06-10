@@ -1,5 +1,5 @@
--- LSP Configuration & Plugins
 -- https://github.com/neovim/nvim-lspconfig
+-- LSP Configuration & Plugins
 return {
 	"neovim/nvim-lspconfig",
 	dependencies = {
@@ -8,7 +8,7 @@ return {
 		"williamboman/mason-lspconfig.nvim",
 		"WhoIsSethDaniel/mason-tool-installer.nvim",
 
-		-- Useful status updates for LSP.
+		-- Useful status updates for LSP in bottom-right corner
 		{ "j-hui/fidget.nvim", opts = {} },
 
 		-- `neodev` configures Lua LSP for your Neovim config, runtime and plugins
@@ -157,6 +157,7 @@ return {
 				-- This may be unwanted, since they displace some of your code
 				if client and client.server_capabilities.inlayHintProvider and vim.lsp.inlay_hint then
 					map("<leader>th", function()
+						---@diagnostic disable-next-line: missing-parameter
 						vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
 					end, "[T]oggle Inlay [H]ints")
 				end
