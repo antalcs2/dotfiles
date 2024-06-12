@@ -1,0 +1,46 @@
+#!/bin/bash
+
+echo -e "- - - New C++ Project - - -\n"
+
+read -p "Project name: " proj_name
+echo "Project location: $PWD/$proj_name"
+
+read -p "C++ standard: " cpp_version
+if [ $cpp_version -ne 98 -a $cpp_version -ne 11 -a $cpp_version -ne 14 -a $cpp_version -ne 17 -a $cpp_version -ne 20 -a $cpp_version -ne 23 -a $cpp_version -ne 26 ]
+then
+	echo "Invalid C++ standard! Aborting..."
+	exit
+fi
+
+while
+	read -p "Is this ok? [y/n]: " ok
+	[ "$ok" != "y" -a "$ok" != "Y" -a "$ok" != "n" -a "$ok" != "N" ]
+do :; done
+
+if [ "$ok" = "n" -o "$ok" = "N" ]; then
+	echo "Abort..."
+	exit
+fi
+
+echo -e "- - - - - - - - - - - - - -\n"
+
+# Create directory tree
+mkdir -m 755 $PWD/$proj_name/
+mkdir -m 755 $PWD/$proj_name/cmake-build-debug/
+
+cp $HOME/.config/nvim/templates/main.cpp $PWD/$proj_name/
+cp $HOME/.config/nvim/templates/CMakeLists.txt $PWD/$proj_name/
+cp $HOME/.config/nvim/templates/.clang-format $PWD/$proj_name/
+
+sed -i "s/proj_name/$proj_name/g" $PWD/$proj_name/CMakeLists.txt
+sed -i "s/cpp_version/$cpp_version/g" $PWD/$proj_name/CMakeLists.txt
+
+echo "Directory tree created..."
+
+# Building project
+echo -e "\nBuilding source..."
+cmake -DCMAKE_CXX_COMPILER=g++ -DCMAKE_BUILD_TYPE=Debug -B $PWD/$proj_name/cmake-build-debug/ -S $PWD/$proj_name/
+cmake --build $PWD/$proj_name/cmake-build-debug/
+
+echo -e "- - - - - - - - - - - - - -\n"
+echo "Project created!"

@@ -8,6 +8,9 @@ return {
 		"rcarriga/nvim-dap-ui",
 		"nvim-neotest/nvim-nio",
 
+		-- https://github.com/theHamsta/nvim-dap-virtual-text
+		"theHamsta/nvim-dap-virtual-text",
+
 		"williamboman/mason.nvim",
 		-- https://github.com/jay-babu/mason-nvim-dap.nvim
 		"jay-babu/mason-nvim-dap.nvim",
@@ -63,7 +66,7 @@ return {
 			dap.set_breakpoint(vim.fn.input("Breakpoint condition: "))
 		end, { desc = "Debug: Set Breakpoint" })
 
-		-- Dap UI setup
+		-- DAP UI setup
 		local dapui = require("dapui")
 		dapui.setup({
 			icons = { expanded = "▾", collapsed = "▸", current_frame = "*" },
@@ -124,5 +127,8 @@ return {
 		dap.listeners.before.event_exited.dapui_config = function()
 			dapui.close()
 		end
+
+		-- DAP virtual text setup
+		require("nvim-dap-virtual-text").setup()
 	end,
 }
