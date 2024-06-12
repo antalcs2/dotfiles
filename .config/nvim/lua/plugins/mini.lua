@@ -21,7 +21,7 @@ return {
 		require("mini.comment").setup()
 
 		-- Adds automatically closing pair to brackets and quotes
-		local bracket_neigh = ".[%s%)%]%}]"
+		local bracket_neigh = ".[%s%)%]%}%\"%'%`]"
 		local quote_neigh = "[^%a\\][%s%)%]%}]"
 		require("mini.pairs").setup({
 			mappings = {
