@@ -29,6 +29,7 @@ return {
 			lua = { "stylua" },
 			cmake = { "cmakelang" },
 			c = { "clang-format" },
+			h = { "clang-format" },
 			cpp = { "clang-format" },
 		},
 	},

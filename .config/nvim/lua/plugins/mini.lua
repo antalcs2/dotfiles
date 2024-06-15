@@ -2,6 +2,12 @@
 -- Various utility plugins
 return {
 	"echasnovski/mini.nvim",
+	dependencies = {
+		-- https://github.com/MaximilianLloyd/ascii.nvim
+		-- Cool ASCII art for starter header
+		{ "MaximilianLloyd/ascii.nvim" },
+		{ "MunifTanjim/nui.nvim" },
+	},
 	config = function()
 		-- Around/Inside textobjects
 		--
@@ -19,6 +25,12 @@ return {
 		require("mini.surround").setup()
 
 		require("mini.comment").setup()
+
+		require("mini.diff").setup({
+			view = {
+				style = "number",
+			},
+		})
 
 		-- Adds automatically closing pair to brackets and quotes
 		local bracket_neigh = ".[%s%)%]%}%\"%'%`]"
@@ -43,7 +55,27 @@ return {
 			local _ = MiniFiles.close() or MiniFiles.open(bufname, false)
 		end, { desc = "Toggle Mini Files" })
 
-		-- Statusline.
+		local starter = require("mini.starter")
+		local ascii = require("ascii")
+		starter.setup({
+			-- header = table.concat(ascii.art.gaming.doom.logo, "\n"),
+			header = table.concat(ascii.get_random("text", "neovim"), "\n"),
+			-- header = table.concat(ascii.get_random("planets", "planets"), "\n"),
+			footer = os.date(),
+			items = {
+				starter.sections.builtin_actions(),
+				starter.sections.recent_files(5, true),
+				starter.sections.recent_files(5, false),
+			},
+			content_hooks = {
+				starter.gen_hook.adding_bullet("> "),
+				starter.gen_hook.indexing("all", { "Builtin actions" }),
+				starter.gen_hook.aligning("center", "center"),
+			},
+			query_updaters = "abcdefghijklmnopqrstuvwxyz0123456789_-.ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+		})
+
+		-- Statusline
 		local statusline = require("mini.statusline")
 		statusline.setup({ use_icons = vim.g.have_nerd_font })
 
