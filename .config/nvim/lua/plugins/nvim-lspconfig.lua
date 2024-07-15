@@ -18,6 +18,10 @@ return {
 		"stevearc/conform.nvim",
 	},
 	config = function()
+		-- disable underlineing error
+		vim.api.nvim_set_hl(0, "DiagnosticUnderlineError", { underline = false })
+		vim.api.nvim_set_hl(0, "DiagnosticUnderlineWarning", { underline = false })
+
 		require("neodev").setup({})
 
 		-- acquaring `cmp_nvim_lsp`'s capabilities

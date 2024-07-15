@@ -64,7 +64,7 @@ return {
 			footer = os.date(),
 			items = {
 				starter.sections.builtin_actions(),
-				starter.sections.recent_files(5, true),
+				starter.sections.recent_files(10, true),
 				starter.sections.recent_files(5, false),
 			},
 			content_hooks = {
