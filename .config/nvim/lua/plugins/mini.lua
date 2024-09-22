@@ -2,6 +2,8 @@
 -- Various utility plugins
 return {
 	"echasnovski/mini.nvim",
+	lazy = false,
+	priority = 100,
 	dependencies = {
 		-- https://github.com/MaximilianLloyd/ascii.nvim
 		-- Cool ASCII art for starter header
@@ -55,13 +57,12 @@ return {
 			local _ = MiniFiles.close() or MiniFiles.open(bufname, false)
 		end, { desc = "Toggle Mini Files" })
 
+		-- Startup menu
 		local starter = require("mini.starter")
 		local ascii = require("ascii")
 		starter.setup({
-			-- header = table.concat(ascii.art.gaming.doom.logo, "\n"),
 			header = table.concat(ascii.get_random("text", "neovim"), "\n"),
-			-- header = table.concat(ascii.get_random("planets", "planets"), "\n"),
-			footer = os.date(),
+			footer = os.date(), -- TODO: make date dynamic
 			items = {
 				starter.sections.builtin_actions(),
 				starter.sections.recent_files(10, true),

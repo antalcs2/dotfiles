@@ -3,6 +3,7 @@
 return {
 	"stevearc/conform.nvim",
 	lazy = false,
+	priority = 500,
 	keys = {
 		{
 			"<leader>f",

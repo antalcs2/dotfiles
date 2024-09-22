@@ -6,8 +6,6 @@ return {
 		priority = 1000, -- Make sure to load this before all the other start plugins.
 		config = function()
 			vim.cmd.colorscheme("gruvbox")
-			-- You can configure highlights by doing something like:
-			-- vim.cmd.hi("Comment gui=none")
 		end,
 	},
 
