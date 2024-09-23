@@ -1,1 +1,1 @@
- export CLANGD_CONFIG=$HOME/.config/clang/.clangd
+export CLANGD_CONFIG=$HOME/.config/clang/.clangd

@@ -58,14 +58,11 @@ return {
 			},
 		})
 
-		vim.keymap.set("n", "<leader><F5>", dap.continue, { desc = "Debug: Start/Continue" })
+		vim.keymap.set("n", "<F5>", dap.continue, { desc = "Debug: Start/Continue" })
 		vim.keymap.set("n", "<F1>", dap.step_into, { desc = "Debug: Step Into" })
 		vim.keymap.set("n", "<F2>", dap.step_over, { desc = "Debug: Step Over" })
 		vim.keymap.set("n", "<F3>", dap.step_out, { desc = "Debug: Step Out" })
-		vim.keymap.set("n", "<F4>", dap.toggle_breakpoint, { desc = "Debug: Toggle Breakpoint" })
-		vim.keymap.set("n", "<leader>b", function()
-			dap.set_breakpoint(vim.fn.input("Breakpoint condition: "))
-		end, { desc = "Debug: Set Breakpoint" })
+		vim.keymap.set("n", "<F6>", dap.toggle_breakpoint, { desc = "Debug: Toggle Breakpoint" })
 
 		-- DAP UI setup
 		local dapui = require("dapui")
@@ -85,6 +82,9 @@ return {
 				},
 			},
 		})
+
+		-- Toggle to see last session result. Without this, you can't see session output in case of unhandled exception.
+		vim.keymap.set("n", "<F7>", dapui.toggle, { desc = "Debug: See last session result." })
 
 		-- Statusline icon designs
 		vim.api.nvim_set_hl(0, "DapBreakpoint", { ctermbg = 0, fg = "#993939", bg = "#31353f" })
@@ -111,9 +111,6 @@ return {
 			"DapStopped",
 			{ text = "", texthl = "DapStopped", linehl = "DapStopped", numhl = "DapStopped" }
 		)
-
-		-- Toggle to see last session result. Without this, you can't see session output in case of unhandled exception.
-		vim.keymap.set("n", "<F7>", dapui.toggle, { desc = "Debug: See last session result." })
 
 		-- Taken from github README
 		dap.listeners.before.attach.dapui_config = function()
