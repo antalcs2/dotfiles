@@ -4,6 +4,7 @@ return {
 	"echasnovski/mini.nvim",
 	lazy = false,
 	priority = 100,
+	version = "*",
 	dependencies = {
 		-- https://github.com/MaximilianLloyd/ascii.nvim
 		-- Cool ASCII art for starter header
@@ -11,7 +12,7 @@ return {
 		{ "MunifTanjim/nui.nvim" },
 	},
 	config = function()
-		-- Around/Inside textobjects
+		-- -- -- -- Around/Inside textobjects -- -- -- --
 		--
 		-- Examples:
 		--  - va)  - [V]isually select [A]round [)]parentesys
@@ -19,22 +20,33 @@ return {
 		--  - ci'  - [C]hange [I]nside [']quote
 		require("mini.ai").setup({ n_lines = 500 })
 
-		-- Add/delete/replace surroundings (brackets, quotes, etc.)
-		--
-		-- - saiw) - [S]urround [A]dd [I]nner [W]ord [)]Paren
-		-- - sd'   - [S]urround [D]elete [']quotes
-		-- - sr)'  - [S]urround [R]eplace [)] [']
-		require("mini.surround").setup()
-
+		-- -- -- -- Comment lines -- -- -- --
 		require("mini.comment").setup()
 
-		require("mini.diff").setup({
+		-- -- -- -- Work with diff hunks -- -- -- --
+		-- toggle overlay with <leader>to
+		local diff = require("mini.diff")
+		diff.setup({
 			view = {
 				style = "number",
 			},
 		})
+		vim.keymap.set("n", "<leader>td", function()
+			diff.toggle_overlay(0)
+		end, { desc = "[T]oggle Mini[D]iff overlay" })
 
-		-- Adds automatically closing pair to brackets and quotes
+		-- -- -- -- File explorer -- -- -- --
+		-- toggle with '-', press '=' to save changes
+		require("mini.files").setup()
+		vim.keymap.set("n", "-", function()
+			local bufname = vim.api.nvim_buf_get_name(0)
+			local _ = MiniFiles.close() or MiniFiles.open(bufname, false)
+		end, { desc = "Toggle Mini Files" })
+
+		-- -- -- -- Move selection in any direction -- -- -- --
+		require("mini.move").setup()
+
+		-- -- -- -- Adds automatically closing pair to brackets and quotes -- -- -- --
 		local bracket_neigh = ".[%s%)%]%}%\"%'%`]"
 		local quote_neigh = "[^%a\\][%s%)%]%}]"
 		require("mini.pairs").setup({
@@ -49,15 +61,7 @@ return {
 			},
 		})
 
-		-- File explorer (toggle with '-')
-		-- Allows file editing (press '=' to save changes)
-		require("mini.files").setup()
-		vim.keymap.set("n", "-", function()
-			local bufname = vim.api.nvim_buf_get_name(0)
-			local _ = MiniFiles.close() or MiniFiles.open(bufname, false)
-		end, { desc = "Toggle Mini Files" })
-
-		-- Startup menu
+		-- -- -- -- Startup menu -- -- -- --
 		local starter = require("mini.starter")
 		local ascii = require("ascii")
 		starter.setup({
@@ -76,7 +80,7 @@ return {
 			query_updaters = "abcdefghijklmnopqrstuvwxyz0123456789_-.ABCDEFGHIJKLMNOPQRSTUVWXYZ",
 		})
 
-		-- Statusline
+		-- -- -- -- Statusline -- -- -- --
 		local statusline = require("mini.statusline")
 		statusline.setup({ use_icons = vim.g.have_nerd_font })
 
@@ -85,5 +89,12 @@ return {
 		statusline.section_location = function()
 			return "%2l:%-2v"
 		end
+
+		-- -- -- -- Add/delete/replace surroundings (brackets, quotes, etc.) -- -- -- --
+		--
+		-- - saiw) - [S]urround [A]dd [I]nner [W]ord [)]Paren
+		-- - sd'   - [S]urround [D]elete [']quotes
+		-- - sr)'  - [S]urround [R]eplace [)] [']
+		require("mini.surround").setup()
 	end,
 }
