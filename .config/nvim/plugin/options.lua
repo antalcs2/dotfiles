@@ -2,6 +2,8 @@
 -- Set to true if you have a Nerd Font installed and selected in the terminal
 vim.g.have_nerd_font = true
 
+vim.opt.termguicolors = true
+
 -- Make line numbers default
 vim.opt.number = true
 -- Make line numbers relative
@@ -64,6 +66,7 @@ vim.opt.shiftwidth = 4
 
 -- Don't have 'o' add comment
 vim.api.nvim_create_autocmd("BufEnter", {
+	group = vim.api.nvim_create_augroup("user-bufenter", { clear = true }),
 	callback = function()
 		vim.cmd([[set formatoptions-=cro]])
 		vim.cmd([[setlocal formatoptions-=cro]])
@@ -73,7 +76,7 @@ vim.api.nvim_create_autocmd("BufEnter", {
 -- Highlight when yanking (copying) text
 vim.api.nvim_create_autocmd("TextYankPost", {
 	desc = "Highlight when yanking (copying) text",
-	group = vim.api.nvim_create_augroup("highlight-yank", { clear = true }),
+	group = vim.api.nvim_create_augroup("user-highlight-yank", { clear = true }),
 	callback = function()
 		vim.highlight.on_yank()
 	end,

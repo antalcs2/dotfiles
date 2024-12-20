@@ -5,7 +5,21 @@ return {
 	lazy = false,
 	priority = 100,
 	opts = {
-		ensure_installed = { "bash", "c", "cpp", "cmake", "lua", "luadoc", "markdown", "query", "vim", "vimdoc" },
+		ensure_installed = {
+			"arduino",
+			"bash",
+			"c",
+			"cpp",
+			"cmake",
+			"json",
+			"lua",
+			"luadoc",
+			"markdown",
+			"query",
+			"vim",
+			"vimdoc",
+			"yaml",
+		},
 		auto_install = true,
 		highlight = {
 			enable = true,

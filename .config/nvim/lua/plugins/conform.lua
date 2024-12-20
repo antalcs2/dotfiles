@@ -32,6 +32,7 @@ return {
 			c = { "clang-format" },
 			h = { "clang-format" },
 			cpp = { "clang-format" },
+			arduino = { "clang-format" },
 		},
 	},
 }

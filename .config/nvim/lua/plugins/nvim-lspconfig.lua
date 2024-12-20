@@ -36,7 +36,8 @@ return {
 			clangd = {
 				filetypes = { "c", "cpp", "objc", "objcpp" },
 			},
-			cmake = {},
+			-- breaks because older version of python3 is installed
+			-- cmake = {},
 			lua_ls = {
 				settings = {
 					Lua = {
@@ -85,12 +86,31 @@ return {
 			},
 		})
 
+		-- hardcoded because of this: https://github.com/arduino/arduino-language-server/pull/199
+		require("lspconfig").arduino_language_server.setup({
+			cmd = {
+				"arduino-language-server",
+				"-clangd",
+				"/usr/bin/clangd",
+				"home/csaba/.local/share/nvim/mason/bin/clangd",
+				"-cli",
+				"/home/csaba/.local/bin/arduino-cli",
+				"-cli-config",
+				"home/csaba/.arduino15/arduino-cli.yaml",
+				"-fqbn",
+				"arduino:avr:uno",
+				"-format-conf-path",
+				"home/csaba/.clang-format",
+			},
+			filetypes = { "arduino" },
+		})
+
 		--  This function gets run when an LSP attaches to a particular buffer.
 		--    That is to say, every time a new file is opened that is associated with
 		--    an lsp (for example, opening `main.rs` is associated with `rust_analyzer`) this
 		--    function will be executed to configure the current buffer
 		vim.api.nvim_create_autocmd("LspAttach", {
-			group = vim.api.nvim_create_augroup("lsp-attach", { clear = true }),
+			group = vim.api.nvim_create_augroup("user-lspattach", { clear = true }),
 			callback = function(event)
 				local map = function(keys, func, desc)
 					vim.keymap.set("n", keys, func, { buffer = event.buf, desc = "LSP: " .. desc })
@@ -130,7 +150,7 @@ return {
 				-- When you move your cursor, the highlights will be cleared (the second autocommand).
 				local client = vim.lsp.get_client_by_id(event.data.client_id)
 				if client and client.server_capabilities.documentHighlightProvider then
-					local highlight_augroup = vim.api.nvim_create_augroup("lsp-highlight", { clear = false })
+					local highlight_augroup = vim.api.nvim_create_augroup("user-lsp-highlight", { clear = false })
 					vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
 						buffer = event.buf,
 						group = highlight_augroup,
@@ -144,10 +164,10 @@ return {
 					})
 
 					vim.api.nvim_create_autocmd("LspDetach", {
-						group = vim.api.nvim_create_augroup("lsp-detach", { clear = true }),
+						group = vim.api.nvim_create_augroup("user-lspdetach", { clear = true }),
 						callback = function(event2)
 							vim.lsp.buf.clear_references()
-							vim.api.nvim_clear_autocmds({ group = "kickstart-lsp-highlight", buffer = event2.buf })
+							vim.api.nvim_clear_autocmds({ group = highlight_augroup, buffer = event2.buf })
 						end,
 					})
 				end

@@ -10,6 +10,9 @@ return {
 		-- Cool ASCII art for starter header
 		{ "MaximilianLloyd/ascii.nvim" },
 		{ "MunifTanjim/nui.nvim" },
+
+		-- https://github.com/nvim-tree/nvim-web-devicons
+		{ "nvim-tree/nvim-web-devicons", enabled = vim.g.have_nerd_font },
 	},
 	config = function()
 		-- -- -- -- Around/Inside textobjects -- -- -- --
@@ -44,6 +47,7 @@ return {
 		end, { desc = "Toggle Mini Files" })
 
 		-- -- -- -- Move selection in any direction -- -- -- --
+		-- move selection or line in normal mode with Alt + hjkl
 		require("mini.move").setup()
 
 		-- -- -- -- Adds automatically closing pair to brackets and quotes -- -- -- --
@@ -79,16 +83,6 @@ return {
 			},
 			query_updaters = "abcdefghijklmnopqrstuvwxyz0123456789_-.ABCDEFGHIJKLMNOPQRSTUVWXYZ",
 		})
-
-		-- -- -- -- Statusline -- -- -- --
-		local statusline = require("mini.statusline")
-		statusline.setup({ use_icons = vim.g.have_nerd_font })
-
-		-- Setting the section for cursor location to LINE:COLUMN
-		---@diagnostic disable-next-line: duplicate-set-field
-		statusline.section_location = function()
-			return "%2l:%-2v"
-		end
 
 		-- -- -- -- Add/delete/replace surroundings (brackets, quotes, etc.) -- -- -- --
 		--

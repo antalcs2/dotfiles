@@ -7,7 +7,8 @@ return {
 	opts = {},
 	dependencies = {
 		"nvim-treesitter/nvim-treesitter",
-		"echasnovski/mini.nvim",
-		"echasnovski/nvim-web-devicons",
+
+		-- https://github.com/nvim-tree/nvim-web-devicons
+		{ "nvim-tree/nvim-web-devicons", enabled = vim.g.have_nerd_font },
 	},
 }
