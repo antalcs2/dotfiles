@@ -23,5 +23,4 @@ cd .dotfiles
 stow .
 ```
 
-In order to see the background images in Settings, you have to copy them as they are (not as symlinks):
-`cp -r ~/.dotfiles/.local/share/backgrounds/ ~/.local/share/`
+Use the `Wallpaper Slideshow` GNOME extension and set the `backgrounds` folder as it's Slideshow Directory. The `backgrounds` directory is ignores by stow.
