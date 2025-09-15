@@ -18,7 +18,7 @@ sudo make install
 
 ## Applying config files
 ```sh
-git clone https://github.com/antalcs02/dotfiles.git ~/.dotfiles
+git clone https://github.com/antalcs2/dotfiles.git ~/.dotfiles
 cd .dotfiles
 stow .
 ```
