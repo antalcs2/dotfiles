@@ -6,14 +6,14 @@ local state = {
 }
 
 local function create_floating_window(opts)
-	-- Default dimensions (80% of the screen width)
 	opts = opts or {}
+	-- Default dimensions (80% of the screen width)
 	local width = opts.width or math.floor(vim.o.columns * 0.8)
 	local height = opts.height or math.floor(vim.o.lines * 0.8)
 
 	-- Calculate centered position
-	local row = math.floor((vim.o.lines - height) / 2)
 	local col = math.floor((vim.o.columns - width) / 2)
+	local row = math.floor((vim.o.lines - height) / 2)
 
 	-- Create a buffer and set it to be scratch
 	local buf = nil
@@ -54,5 +54,10 @@ end
 
 vim.api.nvim_create_user_command("Floaterminal", toggle_terminal, {})
 
-vim.keymap.set("t", "<Esc><Esc>", "<C-\\><C-n>", { desc = "Exit terminal mode" })
+vim.keymap.set(
+	"t",
+	"<Esc><Esc>",
+	"<C-\\><C-n><cmd>Floaterminal<CR>",
+	{ desc = "Exit terminal mode and quit quit window" }
+)
 vim.keymap.set("n", "<leader>tt", toggle_terminal, { desc = "[T]oggle floating [t]erminal" })

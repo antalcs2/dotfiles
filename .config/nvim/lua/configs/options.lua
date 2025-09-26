@@ -9,7 +9,7 @@ vim.opt.number = true
 -- Make line numbers relative
 -- vim.opt.relativenumber = true
 
--- Enable mouse mode, can be useful for resizing splits for example!
+-- Enable mouse mode, can be useful for resizing splits
 vim.opt.mouse = "a"
 
 -- Don't show the mode, since it's already in the status line
@@ -63,20 +63,18 @@ vim.opt.tabstop = 4
 vim.opt.shiftwidth = 4
 
 -- [[ Basic Autocommands ]]
-
--- Don't have 'o' add comment
 vim.api.nvim_create_autocmd("BufEnter", {
-	group = vim.api.nvim_create_augroup("user-bufenter", { clear = true }),
+	desc = "'o' does not add comment",
+	group = vim.api.nvim_create_augroup("UserCommentNewLineGroup", { clear = true }),
 	callback = function()
 		vim.cmd([[set formatoptions-=cro]])
 		vim.cmd([[setlocal formatoptions-=cro]])
 	end,
 })
 
--- Highlight when yanking (copying) text
 vim.api.nvim_create_autocmd("TextYankPost", {
-	desc = "Highlight when yanking (copying) text",
-	group = vim.api.nvim_create_augroup("user-highlight-yank", { clear = true }),
+	desc = "Highlight when yanking text",
+	group = vim.api.nvim_create_augroup("UserYankHighlightGroup", { clear = true }),
 	callback = function()
 		vim.highlight.on_yank()
 	end,

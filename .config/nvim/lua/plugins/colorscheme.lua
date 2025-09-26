@@ -1,22 +1,14 @@
-return {
-	-- default colorscheme
-	{
-		-- https://github.com/ellisonleao/gruvbox.nvim
-		"ellisonleao/gruvbox.nvim",
-		lazy = false,
-		priority = 1000, -- Make sure to load this before all the other start plugins.
-		config = function()
-			require("gruvbox").setup({
-				overrides = {
-					StatusLine = { reverse = false },
-					StatusLineNC = { reverse = false },
-				},
-			})
+vim.pack.add({
+	"https://github.com/ellisonleao/gruvbox.nvim",
+	"https://github.com/folke/tokyonight.nvim",
+	"https://github.com/rebelot/kanagawa.nvim",
+})
 
-			vim.cmd.colorscheme("gruvbox")
-		end,
+require("gruvbox").setup({
+	overrides = {
+		StatusLine = { reverse = false },
+		StatusLineNC = { reverse = false },
 	},
+})
 
-	"folke/tokyonight.nvim",
-	"rebelot/kanagawa.nvim",
-}
+vim.cmd.colorscheme("gruvbox")

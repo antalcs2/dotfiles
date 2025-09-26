@@ -1,50 +1,25 @@
---[[
-
-=====================================================================
-=====================================================================
-========                                    .-----.          ========
-========         .----------------------.   | === |          ========
-========         |.-""""""""""""""""""-.|   |-----|          ========
-========         ||                    ||   | === |          ========
-========         ||   KICKSTART.NVIM   ||   |-----|          ========
-========         ||                    ||   | === |          ========
-========         ||                    ||   |-----|          ========
-========         ||:Tutor              ||   |:::::|          ========
-========         |'-..................-'|   |____o|          ========
-========         `"")----------------(""`   ___________      ========
-========        /::::::::::|  |::::::::::\  \ no mouse \     ========
-========       /:::========|  |==hjkl==:::\  \ required \    ========
-========      '""""""""""""'  '""""""""""""'  '""""""""""'   ========
-========                                                     ========
-=====================================================================
-=====================================================================
-
---]]
-
 vim.g.mapleader = ","
 vim.g.maplocalleader = ","
 
--- https://github.com/folke/lazy.nvim
-local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
-if not (vim.uv or vim.loop).fs_stat(lazypath) then
-	vim.fn.system({
-		"git",
-		"clone",
-		"--filter=blob:none",
-		"https://github.com/folke/lazy.nvim.git",
-		"--branch=stable",
-		lazypath,
-	})
-end
+require("configs.options")
+require("configs.keymaps")
+require("configs.floaterminal")
 
--- Add lazy to the `runtimepath`, this allows to `require` it.
----@diagnostic disable-next-line: undefined-field
-vim.opt.rtp:prepend(lazypath)
+require("plugins.colorscheme")
+require("plugins.mini") -- to load mini.icons early
+require("plugins.lualine")
 
--- Set up Lazy and load `lua/plugins` folder
-require("lazy").setup({ import = "plugins" })
+require("plugins.which-key")
+require("plugins.todo-comments")
 
--- The `plugin` folder is implicitly loaded
+require("plugins.nvim-treesitter")
+require("plugins.telescope")
+require("plugins.render-markdown")
 
--- The line beneath this is called `modeline`. See `:help modeline`
--- vim: ts=2 sts=2 sw=2 et
+require("plugins.nvim-lspconfig")
+require("plugins.conform")
+require("plugins.mason")
+require("plugins.nvim-cmp")
+
+local lsp_servers = require("plugins.nvim-lspconfig").servers
+vim.lsp.enable(lsp_servers)

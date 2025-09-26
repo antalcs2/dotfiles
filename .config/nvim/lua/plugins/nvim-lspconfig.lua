@@ -1,188 +1,124 @@
--- https://github.com/neovim/nvim-lspconfig
--- LSP Configuration & Plugins
-return {
-	"neovim/nvim-lspconfig",
-	lazy = false,
-	priority = 100,
-	dependencies = {
-		{ "williamboman/mason.nvim", config = true },
-		-- https://github.com/williamboman/mason-lspconfig.nvim
-		"williamboman/mason-lspconfig.nvim",
-		"WhoIsSethDaniel/mason-tool-installer.nvim",
+vim.pack.add({
+	-- LSP Configuration
+	"https://github.com/neovim/nvim-lspconfig",
 
-		-- Useful status updates for LSP in bottom-right corner
-		{ "j-hui/fidget.nvim", opts = {} },
+	-- nvim-cmp source for the LSP client
+	"https://github.com/hrsh7th/cmp-nvim-lsp",
 
-		-- `neodev` configures Lua LSP for your Neovim config, runtime and plugins
-		-- used for completion, annotations and signatures of Neovim apis
-		{ "folke/neodev.nvim", opts = {} },
+	-- UI for LSP progress messages
+	"https://github.com/j-hui/fidget.nvim",
+})
 
-		"stevearc/conform.nvim",
+-- disable underlining error
+vim.api.nvim_set_hl(0, "DiagnosticUnderlineError", { underline = false })
+vim.api.nvim_set_hl(0, "DiagnosticUnderlineWarning", { underline = false })
+
+require("fidget").setup({})
+
+local servers = {
+	clangd = {
+		filetypes = { "c", "cpp", "objc", "objcpp" },
 	},
-	config = function()
-		-- disable underlining error
-		vim.api.nvim_set_hl(0, "DiagnosticUnderlineError", { underline = false })
-		vim.api.nvim_set_hl(0, "DiagnosticUnderlineWarning", { underline = false })
+	cmake = {},
+	lua_ls = {
+		settings = {
+			Lua = {
+				completion = {
+					callSnippet = "Replace",
+				},
+				diagnostics = { disable = { "missing-fields" }, globals = { "vim" } },
+				hint = { enable = true },
+				telemetry = { enable = false },
 
-		require("neodev").setup({})
+				-- NOTE: https://github.com/neovim/nvim-lspconfig/blob/master/lsp/lua_ls.lua
+				runtime = {
+					version = "LuaJIT",
+					path = {
+						"lua/?.lua",
+						"lua/?/init.lua",
+					},
+					pathStrict = true,
+				},
+				workspace = {
+					checkThirdParty = false,
+					library = vim.tbl_filter(function(d)
+						return not d:match(vim.fn.stdpath("config") .. "/?a?f?t?e?r?")
+					end, vim.api.nvim_get_runtime_file("lua", true)),
+				},
+			},
+		},
+	},
+}
+-- acquaring cmp_nvim_lsp's capabilities
+local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
-		-- acquaring `cmp_nvim_lsp`'s capabilities
-		local capabilities = nil
-		if pcall(require, "cmp_nvim_lsp") then
-			capabilities = require("cmp_nvim_lsp").default_capabilities()
+for server, settings in pairs(servers) do
+	settings.capabilities = capabilities
+	vim.lsp.config(server, settings)
+end
+
+-- Autocmd executed when the LSP attaches to a buffer
+vim.api.nvim_create_autocmd("LspAttach", {
+	desc = "",
+	group = vim.api.nvim_create_augroup("UserLspAttachGroup", { clear = true }),
+	callback = function(ev)
+		local map = function(keys, func, desc)
+			vim.keymap.set("n", keys, func, { buffer = ev.buf, desc = "LSP: " .. desc })
 		end
 
-		local servers = {
-			clangd = {
-				filetypes = { "c", "cpp", "objc", "objcpp" },
-			},
-			-- breaks because older version of python3 is installed
-			-- cmake = {},
-			lua_ls = {
-				settings = {
-					Lua = {
-						completion = {
-							callSnippet = "Replace",
-						},
-						diagnostics = { disable = { "missing-fields" } },
-					},
-				},
-			},
-		}
+		map("gd", require("telescope.builtin").lsp_definitions, "[G]oto [D]efinition")
+		map("gD", vim.lsp.buf.declaration, "[G]oto [D]eclaration")
+		map("gr", require("telescope.builtin").lsp_references, "[G]oto [R]eferences")
+		map("gtd", require("telescope.builtin").lsp_type_definitions, "[G]oto [T]ype [D]efinition")
 
-		local servers_to_install = vim.tbl_filter(function(key)
-			local t = servers[key]
-			if type(t) == "table" then
-				return not t.manual_install
-			else
-				return t
-			end
-		end, vim.tbl_keys(servers))
+		map("<leader>r", vim.lsp.buf.rename, "[R]ename")
+		map("<leader>ca", vim.lsp.buf.code_action, "[C]ode [A]ction")
+		map("K", vim.lsp.buf.hover, "Hover Documentation")
 
-		require("mason").setup({
-			ui = {
-				border = "rounded",
-				icons = {
-					package_installed = "✓",
-					package_pending = "➜",
-					package_uninstalled = "✗",
-				},
-			},
-		})
-		local ensure_installed = {
-			"stylua",
-		}
-		vim.list_extend(ensure_installed, servers_to_install)
-		require("mason-tool-installer").setup({ ensure_installed = ensure_installed })
+		-- Word highlighting
+		local client = vim.lsp.get_client_by_id(ev.data.client_id)
+		if client and client.server_capabilities.documentHighlightProvider then
+			local highlight_augroup = vim.api.nvim_create_augroup("UserLspHighlightGroup", { clear = false })
+			vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
+				desc = "Highlight word when cursor stays over it",
+				group = highlight_augroup,
+				buffer = ev.buf,
+				callback = vim.lsp.buf.document_highlight,
+			})
+			vim.api.nvim_create_autocmd({ "CursorMoved", "CursorMovedI" }, {
+				desc = "Clear highlight when cursor moves",
+				group = highlight_augroup,
+				buffer = ev.buf,
+				callback = vim.lsp.buf.clear_references,
+			})
 
-		-- Is executed for every `server_name` in the `servers` table
-		require("mason-lspconfig").setup({
-			handlers = {
-				function(server_name)
-					local server = servers[server_name] or {}
-					server.capabilities = vim.tbl_deep_extend("force", {}, capabilities, server.capabilities or {})
-					require("lspconfig")[server_name].setup(server)
+			vim.api.nvim_create_autocmd("LspDetach", {
+				group = vim.api.nvim_create_augroup("UserLspDetachGroup", { clear = true }),
+				callback = function(ev2)
+					vim.lsp.buf.clear_references()
+					vim.api.nvim_clear_autocmds({ group = highlight_augroup, buffer = ev2.buf })
 				end,
-			},
-		})
+			})
+		end
 
-		-- hardcoded because of this: https://github.com/arduino/arduino-language-server/pull/199
-		require("lspconfig").arduino_language_server.setup({
-			cmd = {
-				"arduino-language-server",
-				"-clangd",
-				"/usr/bin/clangd",
-				"home/csaba/.local/share/nvim/mason/bin/clangd",
-				"-cli",
-				"/home/csaba/.local/bin/arduino-cli",
-				"-cli-config",
-				"home/csaba/.arduino15/arduino-cli.yaml",
-				"-fqbn",
-				"arduino:avr:uno",
-				"-format-conf-path",
-				"home/csaba/.clang-format",
-			},
-			filetypes = { "arduino" },
-		})
-
-		--  This function gets run when an LSP attaches to a particular buffer.
-		--    That is to say, every time a new file is opened that is associated with
-		--    an lsp (for example, opening `main.rs` is associated with `rust_analyzer`) this
-		--    function will be executed to configure the current buffer
-		vim.api.nvim_create_autocmd("LspAttach", {
-			group = vim.api.nvim_create_augroup("user-lspattach", { clear = true }),
-			callback = function(event)
-				local map = function(keys, func, desc)
-					vim.keymap.set("n", keys, func, { buffer = event.buf, desc = "LSP: " .. desc })
-				end
-
-				--  To jump back, press <C-t>.
-
-				-- Jump actions
-				map("gd", require("telescope.builtin").lsp_definitions, "[G]oto [D]efinition")
-				map("gD", vim.lsp.buf.declaration, "[G]oto [D]eclaration")
-				map("gr", require("telescope.builtin").lsp_references, "[G]oto [R]eferences")
-				map("gtd", require("telescope.builtin").lsp_type_definitions, "[G]oto [T]ype [D]efinition")
-
-				-- Fuzzy find all the symbols in your current document.
-				--  Symbols are things like variables, functions, types, etc.
-				map("<leader>ds", require("telescope.builtin").lsp_document_symbols, "[D]ocument [S]ymbols")
-
-				-- Fuzzy find all the symbols in your current workspace.
-				--  Similar to document symbols, except searches over your entire project.
-				map("<leader>ws", require("telescope.builtin").lsp_dynamic_workspace_symbols, "[W]orkspace [S]ymbols")
-
-				-- Rename the variable under your cursor.
-				map("<leader>r", vim.lsp.buf.rename, "[R]ename")
-
-				-- Execute a code action, usually your cursor needs to be on top of an error
-				-- or a suggestion from your LSP for this to activate.
-				map("<leader>ca", vim.lsp.buf.code_action, "[C]ode [A]ction")
-
-				-- Opens a popup that displays documentation about the word under your cursor
-				--  See `:help K` for why this keymap.
-				map("K", vim.lsp.buf.hover, "Hover Documentation")
-
-				-- The following two autocommands are used to highlight references of the
-				-- word under your cursor when your cursor rests there for a little while.
-				--    See `:help CursorHold` for information about when this is executed
-				--
-				-- When you move your cursor, the highlights will be cleared (the second autocommand).
-				local client = vim.lsp.get_client_by_id(event.data.client_id)
-				if client and client.server_capabilities.documentHighlightProvider then
-					local highlight_augroup = vim.api.nvim_create_augroup("user-lsp-highlight", { clear = false })
-					vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
-						buffer = event.buf,
-						group = highlight_augroup,
-						callback = vim.lsp.buf.document_highlight,
-					})
-
-					vim.api.nvim_create_autocmd({ "CursorMoved", "CursorMovedI" }, {
-						buffer = event.buf,
-						group = highlight_augroup,
-						callback = vim.lsp.buf.clear_references,
-					})
-
-					vim.api.nvim_create_autocmd("LspDetach", {
-						group = vim.api.nvim_create_augroup("user-lspdetach", { clear = true }),
-						callback = function(event2)
-							vim.lsp.buf.clear_references()
-							vim.api.nvim_clear_autocmds({ group = highlight_augroup, buffer = event2.buf })
-						end,
-					})
-				end
-
-				-- The following autocommand is used to enable inlay hints in your
-				-- code, if the language server you are using supports them
-				--
-				-- This may be unwanted, since they displace some of your code
-				if client and client.server_capabilities.inlayHintProvider and vim.lsp.inlay_hint then
-					map("<leader>th", function()
-						---@diagnostic disable-next-line: missing-parameter
-						vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
-					end, "[T]oggle Inlay [H]ints")
-				end
-			end,
-		})
+		-- Inlay hints
+		if client and client.server_capabilities.inlayHintProvider and vim.lsp.inlay_hint then
+			map("<leader>th", function()
+				vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
+			end, "[T]oggle Inlay [H]ints")
+		end
 	end,
+})
+
+local lsp_to_mason_names = {
+	clangd = "clangd",
+	cmake = "cmake-language-server",
+	lua_ls = "lua-language-server",
 }
+
+local to_install = {}
+for server, _ in pairs(servers) do
+	table.insert(to_install, lsp_to_mason_names[server] or server)
+end
+
+return { to_install = to_install, servers = vim.tbl_keys(servers or {}) }
