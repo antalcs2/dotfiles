@@ -2,10 +2,10 @@ vim.pack.add({
 	-- Various utility plugins
 	{ src = "https://github.com/nvim-mini/mini.nvim", version = "stable" },
 
-	-- Dependency for ascii.nvim (for preview functionality)
-	"https://github.com/MunifTanjim/nui.nvim",
 	-- Cool ASCII art for starter header
 	"https://github.com/MaximilianLloyd/ascii.nvim",
+	-- Dependency for ascii.nvim (for preview functionality)
+	"https://github.com/MunifTanjim/nui.nvim",
 })
 
 -- -- -- -- -- -- -- -- Text editing -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --

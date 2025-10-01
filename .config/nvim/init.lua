@@ -16,10 +16,16 @@ require("plugins.nvim-treesitter")
 require("plugins.telescope")
 require("plugins.render-markdown")
 
-require("plugins.nvim-lspconfig")
 require("plugins.conform")
-require("plugins.mason")
 require("plugins.nvim-cmp")
 
-local lsp_servers = require("plugins.nvim-lspconfig").servers
-vim.lsp.enable(lsp_servers)
+require("plugins.nvim-lspconfig")
+require("lspconf")
+
+require("plugins.mason")
+
+vim.lsp.enable({
+	"clangd",
+	"cmake",
+	"lua_ls",
+})

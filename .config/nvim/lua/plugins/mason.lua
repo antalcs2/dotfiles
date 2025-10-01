@@ -17,7 +17,7 @@ require("mason").setup({
 	},
 })
 
-local lsp_to_install = require("plugins.nvim-lspconfig").to_install
+local lsp_to_install = require("lspconf").to_install
 local fmt_to_install = require("plugins.conform").to_install
 
 -- Concatenate the two tables
