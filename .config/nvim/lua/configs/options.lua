@@ -61,21 +61,3 @@ vim.opt.hlsearch = true
 
 vim.opt.tabstop = 4
 vim.opt.shiftwidth = 4
-
--- [[ Basic Autocommands ]]
-vim.api.nvim_create_autocmd("BufEnter", {
-	desc = "'o' does not add comment",
-	group = vim.api.nvim_create_augroup("UserCommentNewLineGroup", { clear = true }),
-	callback = function()
-		vim.cmd([[set formatoptions-=cro]])
-		vim.cmd([[setlocal formatoptions-=cro]])
-	end,
-})
-
-vim.api.nvim_create_autocmd("TextYankPost", {
-	desc = "Highlight when yanking text",
-	group = vim.api.nvim_create_augroup("UserYankHighlightGroup", { clear = true }),
-	callback = function()
-		vim.highlight.on_yank()
-	end,
-})

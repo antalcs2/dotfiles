@@ -39,14 +39,46 @@ vim.pack.add({
 vim.opt.completeopt = { "menu", "menuone", "noinsert" }
 vim.opt.shortmess:append("c")
 
-local cmp = require("cmp")
-
 local luasnip = require("luasnip")
-luasnip.config.setup({})
+
+---Luasnip snippet for C/C++ header guards
+---@param trigger string which triggers this snippet
+---@return any
+local function guard_snippet(trigger)
+	local s = luasnip.snippet
+	local f = luasnip.function_node
+	local t = luasnip.text_node
+	local i = luasnip.insert_node
+
+	local function fn_upper(filename)
+		return string.upper(vim.fn.fnamemodify(filename, ":t:r"))
+	end
+
+	return s(trigger, {
+		f(function(_, snip)
+			return "#ifndef " .. fn_upper(snip.env.TM_FILENAME) .. "_H"
+		end),
+		t({ "", "" }),
+		f(function(_, snip)
+			return "#define " .. fn_upper(snip.env.TM_FILENAME) .. "_H"
+		end),
+		t({ "", "", "" }),
+		i(0),
+		t({ "", "", "" }),
+		f(function(_, snip)
+			return "#endif  // " .. fn_upper(snip.env.TM_FILENAME) .. "_H"
+		end),
+	})
+end
+
+luasnip.add_snippets("cpp", {
+	guard_snippet("guard"),
+})
 
 local lspkind = require("lspkind")
 lspkind.init({})
 
+local cmp = require("cmp")
 cmp.setup({
 	sources = {
 		{ name = "nvim_lsp" },

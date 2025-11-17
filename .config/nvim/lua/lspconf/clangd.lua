@@ -25,6 +25,10 @@ end
 
 ---@type vim.lsp.Config
 M.Config = {
+	cmd = {
+		"clangd",
+		"--header-insertion=never",
+	},
 	filetypes = { "c", "cpp", "objc", "objcpp" },
 
 	on_attach = function(client, bufnr)

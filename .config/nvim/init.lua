@@ -2,6 +2,7 @@ vim.g.mapleader = ","
 vim.g.maplocalleader = ","
 
 require("configs.options")
+require("configs.autocmds")
 require("configs.keymaps")
 require("configs.floaterminal")
 

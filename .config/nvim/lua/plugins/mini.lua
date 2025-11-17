@@ -68,6 +68,12 @@ vim.keymap.set("n", "-", function()
 	local _ = MiniFiles.close() or MiniFiles.open(bufname, false)
 end, { desc = "Toggle Mini Files" })
 
+-- -- -- -- Session management -- -- -- --
+require("mini.sessions").setup({
+	directory = "",
+	file = "Session.vim",
+})
+
 -- -- -- -- -- -- -- -- Appearance -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
 -- -- -- -- Icon provider -- -- -- --
@@ -85,6 +91,7 @@ starter.setup({
 	end,
 	items = {
 		starter.sections.builtin_actions(),
+		starter.sections.sessions(),
 		starter.sections.recent_files(10, true),
 		starter.sections.recent_files(5, false),
 	},
