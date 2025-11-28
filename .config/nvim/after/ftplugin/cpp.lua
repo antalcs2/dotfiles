@@ -11,3 +11,7 @@ vim.opt_local.linebreak = true
 -- This resets the buffer window to a width of 80 so it is useless
 -- vim.opt_local.columns = 80
 vim.cmd([[set colorcolumn+=80]])
+
+vim.keymap.set("n", "<leader>b", function()
+	vim.cmd("!./run.sh")
+end, { desc = "Build and run C++ project" })
