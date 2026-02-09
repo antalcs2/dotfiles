@@ -1,134 +1,91 @@
--- https://github.com/mfussenegger/nvim-dap
--- Debug
-return {
-	"mfussenegger/nvim-dap",
-	lazy = false,
-	priority = 100,
-	dependencies = {
-		-- https://github.com/rcarriga/nvim-dap-ui
-		"rcarriga/nvim-dap-ui",
-		"nvim-neotest/nvim-nio",
+vim.pack.add({
+	-- Debug Adapter Protocol client
+	"https://github.com/mfussenegger/nvim-dap",
 
-		-- https://github.com/theHamsta/nvim-dap-virtual-text
-		"theHamsta/nvim-dap-virtual-text",
+	-- UI plugin
+	"https://github.com/igorlfs/nvim-dap-view",
 
-		"williamboman/mason.nvim",
-		-- https://github.com/jay-babu/mason-nvim-dap.nvim
-		"jay-babu/mason-nvim-dap.nvim",
-	},
-	config = function()
-		local dap = require("dap")
+	-- Virtual text support
+	"https://github.com/theHamsta/nvim-dap-virtual-text",
+})
 
-		-- Config for `codelldb`
-		local codelldb = function()
-			dap.adapters.codelldb = {
-				name = "Codelldb server",
-				type = "server",
-				host = "127.0.0.1",
-				port = "${port}",
-				executable = {
-					command = vim.fn.stdpath("data") .. "/mason/bin/codelldb",
-					args = { "--port", "${port}" },
-				},
-			}
-			dap.configurations.cpp = {
-				{
-					name = "Launch file",
-					type = "codelldb",
-					request = "launch",
-					program = function()
-						return vim.fn.input("Path to executable: ", vim.fn.getcwd() .. "/", "file")
-					end,
-					cwd = "${workspaceFolder}",
-					stopOnEntry = false,
-				},
-			}
-		end
+if vim.fn.executable("gdb") ~= 1 then
+	vim.notify("[User] Debug config not applied, gdb command not found!", vim.log.levels.WARN)
+	return
+end
 
-		require("mason-nvim-dap").setup({
-			ensure_installed = {
-				"codelldb",
-			},
-			automatic_installation = true,
-			handlers = {
-				function(config)
-					require("mason-nvim-dap").default_setup(config)
-				end,
-				codelldb = codelldb(),
-			},
-		})
+local dap = require("dap")
+local dapview = require("dap-view")
 
-		vim.keymap.set("n", "<F5>", dap.continue, { desc = "Debug: Start/Continue" })
-		vim.keymap.set("n", "<F1>", dap.step_into, { desc = "Debug: Step Into" })
-		vim.keymap.set("n", "<F2>", dap.step_over, { desc = "Debug: Step Over" })
-		vim.keymap.set("n", "<F3>", dap.step_out, { desc = "Debug: Step Out" })
-		vim.keymap.set("n", "<F6>", dap.toggle_breakpoint, { desc = "Debug: Toggle Breakpoint" })
-
-		-- DAP UI setup
-		local dapui = require("dapui")
-		dapui.setup({
-			icons = { expanded = "▾", collapsed = "▸", current_frame = "*" },
-			controls = {
-				icons = {
-					pause = "⏸",
-					play = "▶",
-					step_into = "↴",
-					step_over = "↷",
-					step_out = "↱",
-					step_back = "←",
-					run_last = "⏭",
-					terminate = "⏹",
-					disconnect = "⏏",
-				},
-			},
-		})
-
-		-- Toggle to see last session result. Without this, you can't see session output in case of unhandled exception.
-		vim.keymap.set("n", "<F7>", dapui.toggle, { desc = "Debug: See last session result." })
-
-		-- Statusline icon designs
-		vim.api.nvim_set_hl(0, "DapBreakpoint", { ctermbg = 0, fg = "#993939", bg = "#31353f" })
-		vim.api.nvim_set_hl(0, "DapLogPoint", { ctermbg = 0, fg = "#61afef", bg = "#31353f" })
-		vim.api.nvim_set_hl(0, "DapStopped", { ctermbg = 0, fg = "#98c379", bg = "#31353f" })
-
-		vim.fn.sign_define(
-			"DapBreakpoint",
-			{ text = "⬤", texthl = "DapBreakpoint", linehl = "DapBreakpoint", numhl = "DapBreakpoint" }
-		)
-		vim.fn.sign_define(
-			"DapBreakpointCondition",
-			{ text = "ﳁ", texthl = "DapBreakpoint", linehl = "DapBreakpoint", numhl = "DapBreakpoint" }
-		)
-		vim.fn.sign_define(
-			"DapBreakpointRejected",
-			{ text = "", texthl = "DapBreakpoint", linehl = "DapBreakpoint", numhl = "DapBreakpoint" }
-		)
-		vim.fn.sign_define(
-			"DapLogPoint",
-			{ text = "", texthl = "DapLogPoint", linehl = "DapLogPoint", numhl = "DapLogPoint" }
-		)
-		vim.fn.sign_define(
-			"DapStopped",
-			{ text = "", texthl = "DapStopped", linehl = "DapStopped", numhl = "DapStopped" }
-		)
-
-		-- Taken from github README
-		dap.listeners.before.attach.dapui_config = function()
-			dapui.open()
-		end
-		dap.listeners.before.launch.dapui_config = function()
-			dapui.open()
-		end
-		dap.listeners.before.event_terminated.dapui_config = function()
-			dapui.close()
-		end
-		dap.listeners.before.event_exited.dapui_config = function()
-			dapui.close()
-		end
-
-		-- DAP virtual text setup
-		require("nvim-dap-virtual-text").setup({
-			enabled = true,
-		})
-	end,
+dap.adapters.gdb = {
+	type = "executable",
+	command = "gdb",
+	args = { "--interpreter=dap", "--eval-command", "set print pretty on" },
 }
+
+dap.configurations.cpp = {
+	{
+		name = "Launch",
+		type = "gdb",
+		request = "launch",
+		program = function()
+			return vim.fn.input("Path to executable: ", vim.fn.getcwd() .. "/build/", "file")
+		end,
+		cwd = "${workspaceFolder}",
+		stopAtBeginningOfMainSubprogram = false,
+	},
+}
+
+dap.configurations.c = dap.configurations.cpp
+
+dapview.setup({
+	winbar = {
+		default_section = "scopes",
+		controls = {
+			enabled = true,
+			buttons = {
+				"play",
+				"step_into",
+				"step_over",
+				"step_out",
+				"run_last",
+				"terminate",
+				"disconnect",
+			},
+		},
+	},
+	auto_toggle = true,
+})
+
+-- Signs
+vim.api.nvim_set_hl(0, "DapBreakpoint", { fg = "#993939", bg = "#31353f" })
+vim.api.nvim_set_hl(0, "DapLogPoint", { fg = "#61afef", bg = "#31353f" })
+vim.api.nvim_set_hl(0, "DapStopped", { fg = "#98c379", bg = "#31353f" })
+
+local dap_sign_define = function(name, text, hl)
+	vim.fn.sign_define(name, { text = text, texthl = hl, numhl = hl, linehl = hl })
+end
+
+dap_sign_define("DapBreakpoint", "⬤", "DapBreakpoint")
+dap_sign_define("DapBreakpointCondition", "◆", "DapBreakpoint")
+dap_sign_define("DapBreakpointRejected", "✖", "DapBreakpoint")
+dap_sign_define("DapLogPoint", "⬤", "DapLogPoint")
+dap_sign_define("DapStopped", "▶", "DapStopped")
+
+-- Keymaps
+local map = function(keys, func, desc)
+	vim.keymap.set("n", keys, func, { desc = "Debug: " .. desc })
+end
+
+map("<F5>", dap.continue, "Start/Continue")
+map("<F1>", dap.step_into, "Step Into")
+map("<F2>", dap.step_over, "Step Over")
+map("<F3>", dap.step_out, "Step Out")
+map("<F6>", dap.toggle_breakpoint, "Toggle Breakpoint")
+map("<F7>", dapview.toggle, "See last session's result")
+
+-- Virtual text setup
+require("nvim-dap-virtual-text").setup({
+	show_stop_reason = true,
+	virt_text_pos = "inline",
+})

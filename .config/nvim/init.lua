@@ -19,6 +19,7 @@ require("plugins.render-markdown")
 
 require("plugins.conform")
 require("plugins.nvim-cmp")
+require("plugins.debug")
 
 require("plugins.nvim-lspconfig")
 require("lspconf")
