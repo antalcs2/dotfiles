@@ -12,6 +12,11 @@ vim.opt_local.linebreak = true
 -- vim.opt_local.columns = 80
 vim.cmd([[set colorcolumn+=80]])
 
+vim.keymap.set("n", "<leader>-", function()
+	local key = vim.api.nvim_replace_termcodes("<Esc>", true, false, true)
+	vim.api.nvim_feedkeys("o//" .. string.rep("-", 78) .. key, "n", true)
+end, { desc = "C++: Insert all dash line comment" })
+
 vim.keymap.set("n", "<leader>b", function()
 	vim.cmd("!./run.sh")
-end, { desc = "Build and run C++ project" })
+end, { desc = "C++: Build and run C++ project" })
