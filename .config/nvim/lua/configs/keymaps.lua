@@ -22,5 +22,4 @@ vim.keymap.set("n", "<C-k>", "<C-w><C-k>", { desc = "Move focus to the upper win
 vim.keymap.set("n", "<C-s>", "<C-w><C-v>", { desc = "Split window vertically" })
 vim.keymap.set("n", "<C-=>", "<C-w>=", { desc = "Windows equally wide and tall" })
 
--- Delete command history keymap
-vim.cmd.nnoremap("q:", "<nop>")
+vim.keymap.set("n", "q:", "<Nop>", { desc = "Disable command history keymap" })

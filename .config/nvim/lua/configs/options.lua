@@ -16,7 +16,7 @@ vim.opt.mouse = "a"
 vim.opt.showmode = false
 
 -- Sync clipboard between OS and Neovim.
--- WARNING: If built from source, needs `xclip` or `xsel` installed
+-- WARNING: Needs clipboard manager: on Wayland `wl-copy` (default), on X11 `xclip` or `xsel`
 vim.opt.clipboard = "unnamedplus"
 
 -- Enable break indent
