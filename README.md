@@ -16,6 +16,9 @@ make CMAKE_BUILD_TYPE=Release CMAKE_INSTALL_PREFIX=$HOME/neovim/
 sudo make install
 ```
 
+## Installing go-grip
+TODO: add instructions on next OS reinstall
+
 ## Applying config files
 ```sh
 git clone https://github.com/antalcs2/dotfiles.git ~/.dotfiles
