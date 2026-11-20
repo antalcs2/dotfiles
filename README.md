@@ -16,6 +16,9 @@ make CMAKE_BUILD_TYPE=Release CMAKE_INSTALL_PREFIX=$HOME/neovim/
 sudo make install
 ```
 
+### Requirement
+`sudo dnf install tree-sitter-cli`
+
 ## Installing go-grip
 TODO: add instructions on next OS reinstall
 
