@@ -4,7 +4,7 @@ vim.g.maplocalleader = ","
 require("configs.options")
 require("configs.autocmds")
 require("configs.keymaps")
-require("configs.floaterminal")
+require("utils.floaterminal")
 
 require("plugins.colorscheme")
 require("plugins.mini") -- to load mini.icons early
@@ -19,7 +19,7 @@ require("plugins.render-markdown")
 
 require("plugins.conform")
 require("plugins.nvim-cmp")
-require("plugins.debug")
+require("plugins.nvim-dap")
 
 require("plugins.nvim-lspconfig")
 require("lspconf")

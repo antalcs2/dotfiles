@@ -19,7 +19,7 @@ local function switch_source_header(bufnr, client, editcmd)
 			vim.notify("corresponding file cannot be determined")
 			return
 		end
-		vim.cmd(editcmd .. " " .. vim.uri_to_fname(result))
+		vim.cmd(editcmd .. " " .. vim.uri.to_fname(result))
 	end, bufnr)
 end
 
@@ -28,6 +28,7 @@ M.Config = {
 	cmd = {
 		"clangd",
 		"--header-insertion=never",
+		"--query-driver=/usr/lib64/ccache/arm-none-eabi-*",
 	},
 	filetypes = { "c", "cpp", "objc", "objcpp" },
 

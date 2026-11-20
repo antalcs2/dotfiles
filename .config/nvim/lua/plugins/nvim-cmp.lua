@@ -27,7 +27,7 @@ vim.pack.add({
 	"https://github.com/hrsh7th/cmp-buffer",
 
 	-- Snippet engine
-	{ src = "https://github.com/L3MON4D3/LuaSnip", version = "v2.4.0" },
+	{ src = "https://github.com/L3MON4D3/LuaSnip", version = "v2.5.0" },
 	-- Completion source for LuaSnip
 	"https://github.com/saadparwaiz1/cmp_luasnip",
 
@@ -56,17 +56,17 @@ local function guard_snippet(trigger)
 
 	return s(trigger, {
 		f(function(_, snip)
-			return "#ifndef " .. fn_upper(snip.env.TM_FILENAME) .. "_H"
+			return "#ifndef " .. fn_upper(snip.env.TM_FILENAME) .. "_HPP"
 		end),
 		t({ "", "" }),
 		f(function(_, snip)
-			return "#define " .. fn_upper(snip.env.TM_FILENAME) .. "_H"
+			return "#define " .. fn_upper(snip.env.TM_FILENAME) .. "_HPP"
 		end),
 		t({ "", "", "" }),
 		i(0),
 		t({ "", "", "" }),
 		f(function(_, snip)
-			return "#endif  // " .. fn_upper(snip.env.TM_FILENAME) .. "_H"
+			return "#endif  // " .. fn_upper(snip.env.TM_FILENAME) .. "_HPP"
 		end),
 	})
 end

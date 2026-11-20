@@ -20,7 +20,7 @@ local dapview = require("dap-view")
 dap.adapters.gdb = {
 	type = "executable",
 	command = "gdb",
-	args = { "--interpreter=dap", "--eval-command", "set print pretty on" },
+	-- args = { "--interpreter=dap", "--eval-command", "set print pretty on" },
 }
 
 dap.configurations.cpp = {
@@ -82,7 +82,7 @@ map("<F1>", dap.step_into, "Step Into")
 map("<F2>", dap.step_over, "Step Over")
 map("<F3>", dap.step_out, "Step Out")
 map("<F6>", dap.toggle_breakpoint, "Toggle Breakpoint")
-map("<F7>", dapview.toggle, "See last session's result")
+map("<F7>", dapview.toggle, "Toggle DapView")
 
 -- Virtual text setup
 require("nvim-dap-virtual-text").setup({

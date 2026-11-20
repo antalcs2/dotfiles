@@ -20,7 +20,7 @@ vim.api.nvim_create_autocmd("PackChanged", {
 
 vim.pack.add({
 	-- Fuzzy Finder
-	{ src = "https://github.com/nvim-telescope/telescope.nvim", version = "0.1.x" },
+	{ src = "https://github.com/nvim-telescope/telescope.nvim", version = "v0.2.1" },
 
 	-- Dependency
 	"https://github.com/nvim-lua/plenary.nvim",
